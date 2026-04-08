@@ -1,4 +1,4 @@
-# 📅 Calendarr
+# 📅 Calendar
 
 An Interactive, Premium Wall Calendar Application built with **React** and **Vite**. Calendarr provides an aesthetically pleasing interface with rich seasonal hero images for each month, beautiful hover animations, and a built-in month-by-month "Tasks & Notes" list that automatically saves to your local storage.
 
