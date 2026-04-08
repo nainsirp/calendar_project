@@ -1,0 +1,459 @@
+.wall-calendar {
+  background: var(--bg-calendar);
+  border-radius: 4px; /* Real calendars have slightly sharp edges and are paper-like */
+  box-shadow: var(--shadow-calendar);
+  width: 100%;
+  max-width: 600px; /* Keep it relatively tall and vertical like a wall calendar */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: 40px; /* Space for the nail/hook */
+}
+
+/* --- Hero Image Sec --- */
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
+  background: var(--bg-calendar);
+}
+
+.hero-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-main); /* Fallback background for smaller images */
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Absolutely fills the container */
+  transition: opacity 0.3s ease;
+}
+
+.hero-shadow-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  z-index: 1;
+}
+
+.hero-date-display {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  padding: 1.5rem 2rem;
+  z-index: 10;
+}
+
+.hero-month {
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin: 0;
+  margin-right: -0.2em; /* Compensate for trailing letter-spacing so it aligns perfectly with the year */
+  text-transform: uppercase;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hero-month:hover {
+  transform: scale(1.1);
+}
+
+.hero-year {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-right: -0.1em; /* Compensate for trailing letter-spacing to align flush right */
+  opacity: 0.9;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hero-year:hover {
+  transform: scale(1.1);
+}
+
+
+/* --- Calendar Body --- */
+.calendar-content {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-calendar);
+  position: relative;
+  z-index: 2;
+  border-radius: 0 0 4px 4px;
+}
+
+.calendar-body {
+  display: flex;
+  flex-direction: row;
+  padding: 2rem 1.5rem;
+  gap: 2rem;
+}
+
+/* Responsive stacking is handled at the bottom of this file */
+
+.calendar-body-left {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-body-right {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Controls inside Grid --- */
+.calendar-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, color 0.2s;
+}
+
+.nav-btn:hover {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  transform: scale(1.15);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* --- Month Grid --- */
+.month-grid-container {
+  width: 100%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.month-grid-container.flip-prev {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.month-grid-container.flip-next {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.days-of-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.5rem;
+}
+
+.dow-cell {
+  text-align: center;
+  font-size: 0.70rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0.5rem 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease;
+}
+
+.dow-cell:hover {
+  transform: scale(1.2);
+  color: var(--text-primary);
+}
+
+.dates-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.date-cell {
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  border-radius: 50%;
+}
+
+.date-cell.prev-month, .date-cell.next-month {
+  color: var(--text-muted);
+  font-weight: 400;
+  cursor: default;
+}
+
+.date-cell.current-month:hover {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  transform: scale(1.15);
+  z-index: 2;
+}
+
+.date-cell.current-month:active {
+  transform: scale(0.95);
+}
+
+.date-cell.selected {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  box-shadow: 0 4px 10px var(--accent-light);
+  z-index: 5;
+  border-radius: 12px;
+}
+
+/* --- Notes Panel --- */
+.notes-panel {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.notes-header {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.notes-header h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  transform: translateY(8px);
+  transition: color 0.3s ease;
+}
+
+.notes-header h3:hover {
+  color: var(--accent-color);
+}
+
+.notes-list-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-right: 5px;
+}
+
+/* Custom scrollbar for notes list */
+.notes-list-container::-webkit-scrollbar {
+  width: 4px;
+}
+.notes-list-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.no-tasks-msg {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+.notes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.note-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--bg-calendar);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.note-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* A slightly more visible shadow */
+}
+
+.note-item.completed {
+  opacity: 0.5;
+}
+
+.note-item.completed .note-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.note-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.note-label input[type="checkbox"] {
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.note-text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  word-break: break-word;
+  transition: all 0.2s;
+}
+
+.note-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0; /* Hidden until hover */
+  transition: all 0.2s;
+}
+
+.note-item:hover .note-delete-btn {
+  opacity: 1;
+}
+
+.note-delete-btn:hover {
+  color: #ff4757;
+  transform: scale(1.1);
+}
+
+.note-input-form {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.note-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.note-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-color);
+}
+
+.note-input::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.note-add-btn {
+  background: var(--accent-color);
+  color: var(--accent-text);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, box-shadow 0.2s;
+}
+
+.note-add-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px var(--accent-light);
+}
+
+.note-add-btn:active {
+  transform: scale(0.95);
+}
+
+/* --- Responsive Layout --- */
+@media (max-width: 768px) {
+  .wall-calendar {
+    margin-top: 10px;
+  }
+  .hero-container {
+    height: 250px;
+  }
+  .hero-date-display {
+    padding: 1rem;
+  }
+  .hero-month {
+    font-size: 2rem;
+  }
+  .calendar-body {
+    flex-direction: column-reverse;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-container {
+    height: 180px;
+  }
+  .hero-month {
+    font-size: 1.6rem;
+  }
+  .calendar-body {
+    padding: 1rem 0.75rem;
+  }
+  .date-cell {
+    font-size: 0.8rem;
+  }
+  .dow-cell {
+    font-size: 0.65rem;
+  }
+}
